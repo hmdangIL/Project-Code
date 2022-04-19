@@ -1,8 +1,3 @@
-
-
-
-
-
 import sys
 import pygame
 from win32api import GetSystemMetrics
@@ -90,13 +85,7 @@ class Grid:
         self.width = self.x + (self.blockSize*size)
         self.height = self.y + (self.blockSize*size)
 
-        dict={}
-        for i in range(15):
-            key = str("x" + str(i))
-            dict[key] = i
-        for key, value in dict.items():
-            exec(f'{key}={value}')
-
+        self.list = []
 
         vertical = self.y
         i = 0
@@ -108,13 +97,8 @@ class Grid:
                     target = True
                 else:
                     target = False
-
-
-
                 self.square = Square((self.blockSize, self.blockSize), (horizontal, vertical))
-                for key, value in dict.items():
-                    exec(f'{key} = {self.square}')
-
+                self.list.append(self.square)
                 horizontal += (self.blockSize + 2)
                 j += 1
             vertical += (self.blockSize + 12)
@@ -122,7 +106,8 @@ class Grid:
 
 
     def draw(self):
-        
+        for i in self.list:
+            i.draw()
 
 
 

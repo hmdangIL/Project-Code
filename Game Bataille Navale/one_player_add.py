@@ -117,6 +117,6 @@ def main():
                 sys.exit()
             input1.handle_event(event)
 
-#main()
+main()
 
 
