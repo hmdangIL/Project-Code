@@ -1,8 +1,3 @@
-
-
-
-
-
 import sys
 import pygame
 from win32api import GetSystemMetrics
@@ -29,23 +24,25 @@ bg_img = pygame.image.load("Assets/bg-accueil.jpg")
 bg_img = pygame.transform.scale(bg_img, (width, height-80))
 
 
-# button
+# button Square
 
 class Square:
     def __init__(self, size, pos):
+        self.hovered = False
+        self.clicked = False
+        if self.clicked:
+            self.color = RED
+        elif self.hovered:
+            self.color = YELLOW
+        else:
+            self.color = BLACK
         self.x, self.y = pos
         self.size = size
-        self.change(BLACK)
 
-    
-    def change(self, color):
-        self.color = color
         self.surface = pygame.Surface(self.size)
-        # self.surface.blit(self.new_text, (0, 0))
         self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])  
 
     def draw(self):
-        # window.blit(self.surface, (self.x, self.y))
         pygame.draw.rect(window, self.color, self.rect)
         self.hover()
     
@@ -54,15 +51,26 @@ class Square:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if pygame.mouse.get_pressed()[0]:
                 if self.rect.collidepoint(x, y):
-                    return True
+                    self.clicked = True
+                if self.clicked:
+                    self.color = RED
+                elif self.hovered:
+                    self.color = YELLOW
                 else:
-                    return False
+                    self.color = BLACK
+
 
     def hover(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()):
-            self.change(YELLOW)
+            self.hovered = True
         else:
-            self.change(BLACK)
+            self.hovered = False
+        if self.clicked:
+            self.color = RED
+        elif self.hovered:
+            self.color = YELLOW
+        else:
+            self.color = BLACK
 
 # create a list for grid
 
@@ -85,18 +93,14 @@ class Grid:
     def __init__(self, size, pos):
         self.size = size
         self.x, self.y = pos
-        self.grid = listGrid(self.size, 0.5)
         self.blockSize = 30
         self.width = self.x + (self.blockSize*size)
         self.height = self.y + (self.blockSize*size)
 
-        dict={}
-        for i in range(15):
-            key = str("x" + str(i))
-            dict[key] = i
-        for key, value in dict.items():
-            exec(f'{key}={value}')
+        self.grid = listGrid(self.size, 0.5)
 
+
+        self.list = []
 
         vertical = self.y
         i = 0
@@ -108,13 +112,8 @@ class Grid:
                     target = True
                 else:
                     target = False
-
-
-
                 self.square = Square((self.blockSize, self.blockSize), (horizontal, vertical))
-                for key, value in dict.items():
-                    exec(f'{key} = {self.square}')
-
+                self.list.append(self.square)
                 horizontal += (self.blockSize + 2)
                 j += 1
             vertical += (self.blockSize + 12)
@@ -122,15 +121,20 @@ class Grid:
 
 
     def draw(self):
-        
+        for i in self.list:
+            i.draw()
+    
+    def click(self, event):
+        self.event = event
+        for i in self.list:
+            i.click(self.event)
 
 
 
 
 
                 
-grid1 = Grid(15, (200, 200))
-
+square1 = Square((30, 30), (200, 200))
 
 
 # setting for the infinity loop
@@ -143,12 +147,13 @@ def main():
     while running:
         clock.tick(FPS)
         window.blit(bg_img, (0, 0))
-        grid1.draw()
+        square1.draw()
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            square1.click(event)
 
 main()
 

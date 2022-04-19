@@ -24,7 +24,7 @@ bg_img = pygame.image.load("Assets/bg-accueil.jpg")
 bg_img = pygame.transform.scale(bg_img, (width, height-80))
 
 
-# button
+# button Square
 
 class Square:
     def __init__(self, size, pos):
@@ -36,11 +36,9 @@ class Square:
     def change(self, color):
         self.color = color
         self.surface = pygame.Surface(self.size)
-        # self.surface.blit(self.new_text, (0, 0))
         self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])  
 
     def draw(self):
-        # window.blit(self.surface, (self.x, self.y))
         pygame.draw.rect(window, self.color, self.rect)
         self.hover()
     
@@ -49,9 +47,7 @@ class Square:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if pygame.mouse.get_pressed()[0]:
                 if self.rect.collidepoint(x, y):
-                    return True
-                else:
-                    return False
+                    self.change(RED)
 
     def hover(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()):
@@ -80,10 +76,12 @@ class Grid:
     def __init__(self, size, pos):
         self.size = size
         self.x, self.y = pos
-        self.grid = listGrid(self.size, 0.5)
         self.blockSize = 30
         self.width = self.x + (self.blockSize*size)
         self.height = self.y + (self.blockSize*size)
+
+        self.grid = listGrid(self.size, 0.5)
+
 
         self.list = []
 
@@ -108,6 +106,11 @@ class Grid:
     def draw(self):
         for i in self.list:
             i.draw()
+    
+    def click(self, event):
+        self.event = event
+        for i in self.list:
+            i.click(self.event)
 
 
 
@@ -134,6 +137,7 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            grid1.click(event)
 
 main()
 
