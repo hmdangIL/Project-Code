@@ -31,12 +31,12 @@ class Ship:
     def __init__(self, size, pos):
         self.draging = False
         self.size = size
-        Ship.x, Ship.y = pos
+        self.x, self.y = pos
         self.color = GREEN
         # self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])  
     
     def draw(self):
-        Ship.rect = pygame.Rect(Ship.x, Ship.y, self.size[0], self.size[1])  
+        Ship.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])  
         pygame.draw.rect(window, self.color, Ship.rect)
     
     def drag_drop(self, event):
@@ -46,16 +46,16 @@ class Ship:
             if Ship.rect.collidepoint(mouse_x, mouse_y):
                 if event.button == 1:
                     self.draging = True
-                    self.offset_x = Ship.x - mouse_x
-                    self.offset_y = Ship.y - mouse_y
+                    self.offset_x = self.x - mouse_x
+                    self.offset_y = self.y - mouse_y
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
                 self.draging = False
         elif event.type == pygame.MOUSEMOTION:
             if self.draging:
                 mouse_x, mouse_y = event.pos
-                Ship.x = mouse_x + self.offset_x
-                Ship.y = mouse_y + self.offset_y
+                self.x = mouse_x + self.offset_x
+                self.y = mouse_y + self.offset_y
 
 
 # button Square
