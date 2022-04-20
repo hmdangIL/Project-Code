@@ -29,11 +29,10 @@ bg_img = pygame.transform.scale(bg_img, (width, height-80))
 
 class Ship:
     def __init__(self, size, pos):
-        self.draging = False
+        Ship.draging = False
         self.size = size
         self.x, self.y = pos
         self.color = GREEN
-        # self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])  
     
     def draw(self):
         Ship.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])  
@@ -45,14 +44,14 @@ class Ship:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if Ship.rect.collidepoint(mouse_x, mouse_y):
                 if event.button == 1:
-                    self.draging = True
+                    Ship.draging = True
                     self.offset_x = self.x - mouse_x
                     self.offset_y = self.y - mouse_y
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
-                self.draging = False
+                Ship.draging = False
         elif event.type == pygame.MOUSEMOTION:
-            if self.draging:
+            if Ship.draging:
                 mouse_x, mouse_y = event.pos
                 self.x = mouse_x + self.offset_x
                 self.y = mouse_y + self.offset_y
@@ -61,10 +60,10 @@ class Ship:
 # button Square
 
 class Square(Ship):
-    def __init__(self, size, pos, target):
-        self.target = target
+    def __init__(self, size, pos):
+        self.target = False
         self.hovered = False
-        self.clicked = False
+        self.chose = False
         self.color = BLACK
         self.x, self.y = pos
         self.size = size
@@ -73,41 +72,26 @@ class Square(Ship):
     
     def handle_event(self, event):
         self.event = event
-        # x, y = pygame.mouse.get_pos()
         if self.rect.colliderect(Ship.rect):
             self.hovered = True
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pressed()[0]:
-                    self.clicked = True
+            if (not Ship.draging):
+                self.chose = True
         else:
             self.hovered = False
-        if self.clicked:
-            if self.target:
-                self.color = RED
-            else:
-                self.color = WHITE
+            self.chose = False
+        if self.chose:
+            self.target = True
+            self.color = RED
         elif self.hovered:
+            self.target = False
             self.color = YELLOW
         else:
+            self.target = False
             self.color = BLACK
 
     def draw(self):
         pygame.draw.rect(window, self.color, self.rect)
 
-# create a list for grid
-
-def listGrid(size, prop):
-    grid = []
-    for i in range(size):
-        line = []
-        for j in range(size):
-            if random.random() < prop:
-                k = 1
-            else:
-                k = 0
-            line.append(k)
-        grid.append(line)
-    return grid
 
 # create the grid
 
@@ -119,9 +103,6 @@ class Grid:
         self.width = self.x + (self.blockSize*size)
         self.height = self.y + (self.blockSize*size)
 
-        self.grid = listGrid(self.size, 0.5)
-
-
         self.list = []
 
         vertical = self.y
@@ -130,11 +111,7 @@ class Grid:
             horizontal = self.x
             j = 0
             while horizontal < self.width:
-                if self.grid[i][j] == 1:
-                    self.target = True
-                else:
-                    self.target = False
-                self.square = Square((self.blockSize, self.blockSize), (horizontal, vertical), self.target)
+                self.square = Square((self.blockSize, self.blockSize), (horizontal, vertical))
                 self.list.append(self.square)
                 horizontal += (self.blockSize + 2)
                 j += 1
@@ -157,8 +134,9 @@ class Grid:
 
 
 
-
 ship1 = Ship((30, 120), (1500, 300))
+ship2 = Ship((30, 120), (1700, 300))
+
 
 
 
@@ -184,6 +162,7 @@ def main():
         window.blit(bg_img, (0, 0))
         grid1.draw()
         ship1.draw()
+        ship2.draw()
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -191,6 +170,7 @@ def main():
                 sys.exit()
             grid1.handle_event(event)
             ship1.drag_drop(event)
+            ship2.drag_drop(event)
 
 main()
 
