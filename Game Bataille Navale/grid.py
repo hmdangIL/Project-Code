@@ -36,7 +36,6 @@ class Square:
         self.x, self.y = pos
         self.size = size
 
-        self.surface = pygame.Surface(self.size)
         self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])  
     
     def handle_event(self, event):
