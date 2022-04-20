@@ -84,7 +84,6 @@ class Square(Ship):
                 self.chose = False
 
 
-
         if self.chose:
             self.target = True
             self.color = RED
