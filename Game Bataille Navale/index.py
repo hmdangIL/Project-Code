@@ -135,7 +135,7 @@ class Ship:
 class Square(Ship):
     def __init__(self, size, pos, listShip):
         self.listShip = listShip
-        self.confirmed = False
+        # self.confirmed = False
         self.target = False
         self.hovered = False
         self.chose = False

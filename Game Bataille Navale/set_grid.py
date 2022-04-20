@@ -4,15 +4,14 @@ import index
 import war_one_player
 
 
-
 ship1 = index.Ship((30, 120), (1500, 300))
 ship2 = index.Ship((30, 120), (1700, 300))
 
 
 listShip = [ship1, ship2]
 
- 
-                
+
+
 grid1 = index.Grid(15, (200, 250), listShip)
 
 
@@ -38,12 +37,11 @@ def main():
                 pygame.quit()
                 sys.exit()
             grid1.handle_event(event)
+            # grid1.attack(event)
             for ship in listShip:
                 ship.drag_drop(event)
             if button1.click(event):
-                # grid1.confirm_target(event)
                 war_one_player.main()
-
 
 if __name__ == "__main__":
     main()
