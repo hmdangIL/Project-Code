@@ -1,7 +1,6 @@
 import sys
 import pygame
 from win32api import GetSystemMetrics
-import random
 
 # initialize the modules
 pygame.init()
@@ -23,6 +22,7 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 COLOR_INACTIVE_BOX = WHITE
 COLOR_ACTIVE_BOX = RED
 
@@ -53,10 +53,9 @@ class Button:
         self.hover()
     
     def click(self, event):
-        x, y = pygame.mouse.get_pos()
         if event.type == pygame.MOUSEBUTTONDOWN:
             if pygame.mouse.get_pressed()[0]:
-                if self.rect.collidepoint(x, y):
+                if self.rect.collidepoint(pygame.mouse.get_pos()):
                     return True
                 else:
                     return False
@@ -86,10 +85,9 @@ class Input_box:
 
     def handle_event(self, event):
         self.event = event
-        x, y = pygame.mouse.get_pos()
         if event.type == pygame.MOUSEBUTTONDOWN:
             if pygame.mouse.get_pressed()[0]:
-                if self.rect.collidepoint(x, y):
+                if self.rect.collidepoint(pygame.mouse.get_pos()):
                     self.active = True
                 else:
                     self.active = False
@@ -137,9 +135,11 @@ class Ship:
 class Square(Ship):
     def __init__(self, size, pos, listShip):
         self.listShip = listShip
+        self.confirmed = False
         self.target = False
         self.hovered = False
         self.chose = False
+        self.attacked = False
         self.color = BLACK
         self.x, self.y = pos
         self.size = size
@@ -158,7 +158,6 @@ class Square(Ship):
                 self.hovered = False
                 self.chose = False
 
-
         if self.chose:
             self.target = True
             self.color = RED
@@ -168,6 +167,22 @@ class Square(Ship):
         else:
             self.target = False
             self.color = BLACK
+
+    def attack(self, event):
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if pygame.mouse.get_pressed()[0]:
+                if self.rect.collidepoint(mouse_x, mouse_y):
+                    self.attacked = True
+        if self.attacked:
+            if self.target:
+                self.color = BLUE
+            else:
+                self.color = WHITE     
+
+    # def confirm_target(self, event):
+        # self.confirmed = True
+
 
     def draw(self):
         pygame.draw.rect(window, self.color, self.rect)
@@ -207,4 +222,13 @@ class Grid:
         self.event = event
         for i in self.listSquare:
             i.handle_event(self.event)
+    
+    def attack(self, event):
+        self.event = event
+        for i in self.listSquare:
+            i.attack(self.event)
 
+    """def confirm_target(self, event):
+        self.event = event
+        for i in self.listSquare:
+            i.confirm_target(self.event)"""

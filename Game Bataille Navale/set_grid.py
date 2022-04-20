@@ -1,6 +1,7 @@
 import sys
 import pygame
 import index
+import war_one_player
 
 
 
@@ -10,11 +11,12 @@ ship2 = index.Ship((30, 120), (1700, 300))
 
 listShip = [ship1, ship2]
 
-
+ 
                 
 grid1 = index.Grid(15, (200, 250), listShip)
 
 
+button1 = index.Button("WAR", (100, 100))
 
 # setting for the infinity loop
 clock = pygame.time.Clock()
@@ -27,6 +29,7 @@ def main():
         clock.tick(FPS)
         index.window.blit(index.bg_img, (0, 0))
         grid1.draw()
+        button1.draw()
         for ship in listShip:
             ship.draw()
         pygame.display.update()
@@ -37,7 +40,10 @@ def main():
             grid1.handle_event(event)
             for ship in listShip:
                 ship.drag_drop(event)
+            if button1.click(event):
+                # grid1.confirm_target(event)
+                war_one_player.main()
 
-main()
 
-
+if __name__ == "__main__":
+    main()
