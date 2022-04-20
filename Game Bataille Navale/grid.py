@@ -10,6 +10,7 @@ RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 COLOR_INACTIVE_BOX = WHITE
 COLOR_ACTIVE_BOX = RED
+
 # initialize the modules
 pygame.init()
 pygame.font.init()
@@ -27,33 +28,39 @@ bg_img = pygame.transform.scale(bg_img, (width, height-80))
 # button Square
 
 class Square:
-    def __init__(self, size, pos):
+    def __init__(self, size, pos, target):
+        self.target = target
+        self.hovered = False
+        self.clicked = False
+        self.color = BLACK
         self.x, self.y = pos
         self.size = size
-        self.change(BLACK)
 
-    
-    def change(self, color):
-        self.color = color
         self.surface = pygame.Surface(self.size)
         self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])  
+    
+    def handle_event(self, event):
+        self.event = event
+        x, y = pygame.mouse.get_pos()
+        if self.rect.collidepoint(x, y):
+            self.hovered = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    self.clicked = True
+        else:
+            self.hovered = False
+        if self.clicked:
+            if self.target:
+                self.color = RED
+            else:
+                self.color = WHITE
+        elif self.hovered:
+            self.color = YELLOW
+        else:
+            self.color = BLACK
 
     def draw(self):
         pygame.draw.rect(window, self.color, self.rect)
-        self.hover()
-    
-    def click(self, event):
-        x, y = pygame.mouse.get_pos()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if pygame.mouse.get_pressed()[0]:
-                if self.rect.collidepoint(x, y):
-                    self.change(RED)
-
-    def hover(self):
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
-            self.change(YELLOW)
-        else:
-            self.change(BLACK)
 
 # create a list for grid
 
@@ -92,25 +99,25 @@ class Grid:
             j = 0
             while horizontal < self.width:
                 if self.grid[i][j] == 1:
-                    target = True
+                    self.target = True
                 else:
-                    target = False
-                self.square = Square((self.blockSize, self.blockSize), (horizontal, vertical))
+                    self.target = False
+                self.square = Square((self.blockSize, self.blockSize), (horizontal, vertical), self.target)
                 self.list.append(self.square)
                 horizontal += (self.blockSize + 2)
                 j += 1
             vertical += (self.blockSize + 12)
             i += 1
 
-
     def draw(self):
         for i in self.list:
             i.draw()
     
-    def click(self, event):
+    def handle_event(self, event):
         self.event = event
         for i in self.list:
-            i.click(self.event)
+            i.handle_event(self.event)
+
 
 
 
@@ -137,7 +144,7 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            grid1.click(event)
+            grid1.handle_event(event)
 
 main()
 
