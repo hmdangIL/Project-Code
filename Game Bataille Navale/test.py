@@ -1,4 +1,30 @@
-listDT = [1, 0, 1, 2, 1, 2]
-with open("testData", 'w') as data:
-    for i in listDT:
-        data.write(str(i) + '\n')
+def findGridDataPlayer1():
+    gridData = open('gridDataPlayer1.txt')
+    data = []
+    for line in gridData:
+        data.append(int(line[:-1]))
+    gridData.close()
+    return data
+
+
+data = findGridDataPlayer1()
+print(data)
+
+1, 0, 0, 0, 1, 0, 0, 0, 0, 0
+0, 0, 0, 1, 0, 0, 0, 0, 1, 0,
+0, 0, 1, 0, 1, 0, 0, 0, 0, 0,
+0, 1, 0, 0, 0, 0, 0, 0, 0, 0
+1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+0, 0, 1, 1, 0, 0, 0, 0, 0, 0,
+0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 
+
+
+1, 1, 1, 1, 0, 0, 0, 0, 0, 1
+1, 1, 1, 0, 0, 0, 0, 0, 1, 1,
+1, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+0, 0, 0, 0, 0, 0, 1, 0, 0, 0
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
