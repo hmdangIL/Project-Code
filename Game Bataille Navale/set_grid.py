@@ -41,6 +41,7 @@ def main():
             for ship in listShip:
                 ship.drag_drop(event)
             if button1.click(event):
+                grid1.save()
                 war_one_player.main()
 
 if __name__ == "__main__":

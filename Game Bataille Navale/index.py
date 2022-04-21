@@ -133,10 +133,14 @@ class Ship:
 # button Square
 
 class Square(Ship):
-    def __init__(self, size, pos, listShip):
+    def __init__(self, size, pos, listShip, dataTarget):
         self.listShip = listShip
+        self.dataTarget = dataTarget
         # self.confirmed = False
-        self.target = False
+        if dataTarget == 0:
+            self.target = False
+        elif dataTarget == 1:
+            self.target = True
         self.hovered = False
         self.chose = False
         self.attacked = False
@@ -144,7 +148,7 @@ class Square(Ship):
         self.x, self.y = pos
         self.size = size
 
-        self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])  
+        self.rect = pygame.Rect(self.x, self.y, self.size[0], self.size[1])
     
     def handle_event(self, event):
         self.event = event
@@ -169,6 +173,7 @@ class Square(Ship):
             self.color = BLACK
 
     def attack(self, event):
+        self.event = event
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if event.type == pygame.MOUSEBUTTONDOWN:
             if pygame.mouse.get_pressed()[0]:
@@ -180,8 +185,11 @@ class Square(Ship):
             else:
                 self.color = WHITE     
 
-    # def confirm_target(self, event):
-        # self.confirmed = True
+    def isTarget(self):
+        if self.target:
+            return True
+        else:
+            return False
 
 
     def draw(self):
@@ -191,9 +199,16 @@ class Square(Ship):
 # create the grid
 
 class Grid:
-    def __init__(self, size, pos, listShip):
+    def __init__(self, size, pos, listShip=[], getData=False):
         self.listShip = listShip
         self.size = size
+        self.getData = getData
+        if self.getData:
+            self.dataTarget = self.findGridData()
+        else:
+            self.dataTarget = []
+            for i in range(self.size * self.size):
+                self.dataTarget.append(0)
         self.x, self.y = pos
         self.blockSize = 35
         self.width = self.x + (self.blockSize*size)
@@ -203,12 +218,14 @@ class Grid:
 
         vertical = self.y
         i = 0
+        self.indexDataTarget = 0
         while vertical < self.height:
             horizontal = self.x
             j = 0
             while horizontal < self.width:
-                self.square = Square((self.blockSize, self.blockSize), (horizontal, vertical), self.listShip)
+                self.square = Square((self.blockSize, self.blockSize), (horizontal, vertical), self.listShip, self.dataTarget[self.indexDataTarget])
                 self.listSquare.append(self.square)
+                self.indexDataTarget += 1
                 horizontal += (self.blockSize + 2)
                 j += 1
             vertical += (self.blockSize + 12)
@@ -227,8 +244,19 @@ class Grid:
         self.event = event
         for i in self.listSquare:
             i.attack(self.event)
+    
+    def save(self):
+        with open('gridData.txt', 'w') as data:
+            for i in self.listSquare:
+                if i.isTarget():
+                    data.write(str(1) + '\n')
+                else:
+                    data.write(str(0) + '\n')
 
-    """def confirm_target(self, event):
-        self.event = event
-        for i in self.listSquare:
-            i.confirm_target(self.event)"""
+    def findGridData(self):
+        gridData = open('gridData.txt')
+        data = []
+        for line in gridData:
+            data.append(int(line[:-1]))
+        gridData.close()
+        return data
