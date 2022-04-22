@@ -14,8 +14,10 @@ ship3 = index.Ship((35, 120), (1200, 300))
 ship4 = index.Ship((35, 35), (1300, 300))
 ship5 = index.Ship((35, 35), (1300, 350))
 ship6 = index.Ship((35, 35), (1300, 400))
+ship7 = index.Ship((35, 35), (1300, 450))
+ship8 = index.Ship((35, 35), (1300, 500))
 
-listShip = [ship1, ship2, ship3, ship4, ship5, ship6]
+listShip = [ship1, ship2, ship3, ship4, ship5, ship6, ship7, ship8]
 
 
 

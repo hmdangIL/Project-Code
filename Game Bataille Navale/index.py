@@ -148,6 +148,7 @@ class Ship:
 
 class Square(Ship):
     def __init__(self, size, pos, listShip, dataTarget):
+        self.isChangeTurn = False
         self.listShip = listShip
         self.dataTarget = dataTarget
         # self.confirmed = False
@@ -157,7 +158,7 @@ class Square(Ship):
             self.target = True
         self.hovered = False
         self.chose = False
-        self.attacked = False
+        self.isAttacked = False
         self.color = BLACK
         self.x, self.y = pos
         self.size = size
@@ -186,34 +187,65 @@ class Square(Ship):
             self.target = False
             self.color = BLACK
 
-    def attack(self, event):
-        self.event = event
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if pygame.mouse.get_pressed()[0]:
-                if self.rect.collidepoint(mouse_x, mouse_y):
-                    self.attacked = True
-        if self.attacked:
+    def attacked(self, event):
+        if self.isOnAttacked:
+            self.event = event
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    if self.rect.collidepoint(mouse_x, mouse_y):
+                        if not self.isAttacked:
+                            self.isChangeTurn = True
+                            self.isAttacked = True
+        if self.isAttacked:
             if self.target:
                 self.color = BLUE
             else:
                 self.color = WHITE
-
+            
+    
     def isTarget(self):
         if self.target:
             return True
         else:
             return False
+    
+    def isKilled(self):
+        self.isAttacked = True
+        self.isChangeTurn = True
+    
 
 
     def draw(self):
         pygame.draw.rect(window, self.color, self.rect)
+
+    def die(self):
+        if self.isAttacked:
+            return True
+        else:
+            return False
+    
+    def onAttacked(self):
+        self.isOnAttacked = True
+    
+    def offAttacked(self):
+        self.isOnAttacked = False
+    
+    def resetTurn(self):
+        self.isChangeTurn = False
+    
+    def changeTurn(self):
+        return self.isChangeTurn
+
 
 
 # create the grid
 
 class Grid:
     def __init__(self, size, pos, listShip=[], getData=False):
+        # self.beingAttacked = False
+        # self.listSquareDie = []
+        self.turnAttacked = False
         self.listShip = listShip
         self.size = size
         self.getData = getData
@@ -225,11 +257,6 @@ class Grid:
                 self.dataTarget.append(0)
         elif self.getData == "Random":
             self.dataTarget = gridDataRandom(SIZE_GRID_MEDIUM)
-
-
-
-
-
 
 
 
@@ -264,10 +291,11 @@ class Grid:
         for i in self.listSquare:
             i.handle_event(self.event)
     
-    def attack(self, event):
+    def attacked(self, event):
         self.event = event
         for i in self.listSquare:
-            i.attack(self.event)
+            i.attacked(self.event)
+        
     
     def save(self):
         with open('gridDataPlayer1.txt', 'w') as data:
@@ -284,6 +312,63 @@ class Grid:
             data.append(int(line[:-1]))
         gridData.close()
         return data
+    
+    def onAttacked(self):
+        for i in self.listSquare:
+            i.onAttacked()
+
+    
+    def offAttacked(self):
+        for i in self.listSquare:
+            i.offAttacked()
+
+
+    def randomAttacked(self):
+        i = random.choice(self.listSquare)
+        while i.die():
+            i = random.choice(self.listSquare)
+        i.isKilled()
+    
+    def lose(self):
+        self.isLose = True
+        for i in self.listSquare:
+            if (i.isTarget()) and (not i.die()):
+                self.isLose = False
+        return self.isLose
+
+    def changeTurn(self):
+        self.isChangeTurn = False
+        for i in self.listSquare:
+            if i.changeTurn():
+                self.isChangeTurn = True
+        return self.isChangeTurn
+    
+    def resetTurn(self):
+        for i in self.listSquare:
+            i.resetTurn()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -437,8 +522,5 @@ def gridDataRandom(size):
     for line in dataTarget:
         for data in line:
             res.append(data)
-
-
-
 
     return res

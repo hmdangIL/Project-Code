@@ -1,30 +1,8 @@
-def findGridDataPlayer1():
-    gridData = open('gridDataPlayer1.txt')
-    data = []
-    for line in gridData:
-        data.append(int(line[:-1]))
-    gridData.close()
-    return data
+class Test:
+    def __init__(self):
+        self.value = 5
+    def draw(self):
+        print(self.value)
 
-
-data = findGridDataPlayer1()
-print(data)
-
-1, 0, 0, 0, 1, 0, 0, 0, 0, 0
-0, 0, 0, 1, 0, 0, 0, 0, 1, 0,
-0, 0, 1, 0, 1, 0, 0, 0, 0, 0,
-0, 1, 0, 0, 0, 0, 0, 0, 0, 0
-1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-0, 0, 1, 1, 0, 0, 0, 0, 0, 0,
-0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 
-
-
-1, 1, 1, 1, 0, 0, 0, 0, 0, 1
-1, 1, 1, 0, 0, 0, 0, 0, 1, 1,
-1, 1, 0, 0, 0, 0, 0, 1, 0, 0,
-0, 0, 0, 0, 0, 0, 1, 0, 0, 0
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+i = Test()
+i.draw()
