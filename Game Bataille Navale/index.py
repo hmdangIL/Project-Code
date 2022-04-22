@@ -195,7 +195,8 @@ class Square(Ship):
                 if pygame.mouse.get_pressed()[0]:
                     if self.rect.collidepoint(mouse_x, mouse_y):
                         if not self.isAttacked:
-                            self.isChangeTurn = True
+                            if not self.target:
+                                self.isChangeTurn = True
                             self.isAttacked = True
         if self.isAttacked:
             if self.target:
@@ -212,14 +213,15 @@ class Square(Ship):
     
     def isKilled(self):
         self.isAttacked = True
-        self.isChangeTurn = True
+        if not self.target:
+            self.isChangeTurn = True
     
 
 
     def draw(self):
         pygame.draw.rect(window, self.color, self.rect)
 
-    def die(self):
+    def dead(self):
         if self.isAttacked:
             return True
         else:
@@ -243,8 +245,6 @@ class Square(Ship):
 
 class Grid:
     def __init__(self, size, pos, listShip=[], getData=False):
-        # self.beingAttacked = False
-        # self.listSquareDie = []
         self.turnAttacked = False
         self.listShip = listShip
         self.size = size
@@ -325,16 +325,16 @@ class Grid:
 
     def randomAttacked(self):
         i = random.choice(self.listSquare)
-        while i.die():
+        while i.dead():
             i = random.choice(self.listSquare)
         i.isKilled()
     
-    def lose(self):
-        self.isLose = True
+    def countTargetAlive(self):
+        self.targetAlive = 0
         for i in self.listSquare:
-            if (i.isTarget()) and (not i.die()):
-                self.isLose = False
-        return self.isLose
+            if (i.isTarget()) and (not i.dead()):
+                self.targetAlive += 1
+        return self.targetAlive
 
     def changeTurn(self):
         self.isChangeTurn = False
@@ -346,13 +346,6 @@ class Grid:
     def resetTurn(self):
         for i in self.listSquare:
             i.resetTurn()
-
-
-
-
-
-
-
 
 
 

@@ -1,8 +1,3 @@
-class Test:
-    def __init__(self):
-        self.value = 5
-    def draw(self):
-        print(self.value)
+import random
 
-i = Test()
-i.draw()
+print(random.randint(0, 1))

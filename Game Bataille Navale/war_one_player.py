@@ -1,6 +1,7 @@
 import sys
 import pygame
 import index
+import time
 
 
 
@@ -23,35 +24,37 @@ def main():
         index.window.blit(index.bg_img, (0, 0))
         grid1.draw()
         gridAuto.draw()
+        # draw text name player
+        # draw text the number target remain grid.countTargetAlive()
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if turn == "player1":
+                # draw text turn
                 grid1.resetTurn()
                 grid1.offAttacked()
                 gridAuto.onAttacked()
                 gridAuto.attacked(event)
                 if gridAuto.changeTurn():
-                    if gridAuto.lose():
+                    if gridAuto.countTargetAlive() == 0:
                         print('New page1')   
                     else:
                         turn = "auto"
             if turn == "auto":
+                # draw text turn
                 gridAuto.resetTurn()
                 gridAuto.offAttacked()
                 grid1.onAttacked()
                 grid1.randomAttacked()
                 grid1.attacked(event)
                 if grid1.changeTurn():
-                    if grid1.lose():
+                    if grid1.countTargetAlive() == 0:
                         print('New page2')
                     else:
                         turn = "player1"
-                        print('turn')      
 
-                
 
 
 
