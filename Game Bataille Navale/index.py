@@ -233,7 +233,7 @@ class Square(Ship):
     
     def offAttacked(self):
         self.isOnAttacked = False
-    
+        
     def resetTurn(self):
         self.isChangeTurn = False
     
@@ -250,16 +250,18 @@ class Grid:
         self.listShip = listShip
         self.size = size
         self.getData = getData
-        if self.getData == True:
-            self.dataTarget = self.findGridDataPlayer1()
-        elif self.getData == False:
+        if self.getData == False:
             self.dataTarget = []
             for i in range(self.size * self.size):
                 self.dataTarget.append(0)
-        elif self.getData == "Random":
+        elif self.getData == "Random Medium":
             self.dataTarget = gridDataRandom(SIZE_GRID_MEDIUM)
-
-
+        elif self.getData == "Random Small":
+            self.dataTarget = gridDataRandom(SIZE_GRID_SMALL)
+        elif self.getData == "Player1":
+            self.dataTarget = self.findGridDataPlayer1()
+        elif self.getData == "Player2":
+            self.dataTarget = self.findGridDataPlayer2()
 
         self.x, self.y = pos
         self.blockSize = 35
@@ -313,11 +315,18 @@ class Grid:
             data.append(int(line[:-1]))
         gridData.close()
         return data
+
+    def findGridDataPlayer2(self):
+        gridData = open('gridDataPlayer2.txt')
+        data = []
+        for line in gridData:
+            data.append(int(line[:-1]))
+        gridData.close()
+        return data
     
     def onAttacked(self):
         for i in self.listSquare:
             i.onAttacked()
-
     
     def offAttacked(self):
         for i in self.listSquare:
@@ -355,154 +364,30 @@ class Grid:
         for i in self.listSquare:
             i.resetTurn()
 
+##################################################################################
+shipL = 5
+shipM = 3
+shipS = 1
+dataTarget = []
+listTargetChose = []
 
-
-
-def gridDataRandom(size):
-    dataTarget = []
-    for i in range(size):
+def gridDataRandom(sizeGrid):
+    global dataTarget, listTargetChose
+    for i in range(sizeGrid):
         line = []
-        for j in range(size):
+        for j in range(sizeGrid):
             line.append(0)
         dataTarget.append(line)
-    listTargetChose = []
-
-
-
-    if size == SIZE_GRID_SMALL:
+    
+    if sizeGrid == SIZE_GRID_SMALL:
         # 1 shipM and 5 shipS
-
-        # 1 shipM
-        shipM_Added = 0
-        while shipM_Added < 1:
-            yShipM = random.randint(0, size-1)
-            if yShipM > (size-3):
-                xShipM = random.randint(0, size-3)
-                horizontal = True
-            else:
-                horizontal = random.choice([True, False])
-                if horizontal:
-                    xShipM = random.randint(0, size-3)
-                else:
-                    xShipM = random.randint(0, size-1)
-            
-            if horizontal:
-                canAdded = True
-                for i in range(xShipM, xShipM+3):
-                    if (yShipM, i) in listTargetChose:
-                        canAdded = False
-                if canAdded:
-                    for i in range(xShipM, xShipM+3):
-                        dataTarget[yShipM][i] = 1
-                        listTargetChose.append((yShipM, i))
-                    shipM_Added += 1
-            else:
-                canAdded = True
-                for i in range(yShipM, yShipM+3):
-                    if (i, xShipM) in listTargetChose:
-                        canAdded = False
-                if canAdded:
-                    for i in range(yShipM, yShipM+3):
-                        dataTarget[i][xShipL] = 1
-                        listTargetChose.append((i, xShipL))
-                    shipM_Added += 1      
-
-        # 5 shipS
-        shipS_Added = 0
-        while shipS_Added < 5:
-            xShipS = random.randint(0, 6)
-            yShipS = random.randint(0, 6)
-            if (yShipS, xShipS) not in listTargetChose:
-                dataTarget[yShipS][xShipS] = 1
-                shipS_Added += 1
-                listTargetChose.append((yShipS, xShipS))
-
-
-    if size == SIZE_GRID_MEDIUM:
+        shipDataRandom(shipM, 1, sizeGrid)
+        shipDataRandom(shipS, 5, sizeGrid)
+    if sizeGrid == SIZE_GRID_MEDIUM:
         # 1 shipL and 2 shipM and 5 shipS
-
-        # 1 shipL
-        shipL_Added = 0
-        while shipL_Added < 1:
-            yShipL = random.randint(0, size-1)
-            if yShipL > (size-5):
-                xShipL = random.randint(0, size-5)
-                horizontal = True
-            else:
-                horizontal = random.choice([True, False])
-                if horizontal:
-                    xShipL = random.randint(0, size-5)
-                else:
-                    xShipL = random.randint(0, size-1)
-            
-            if horizontal:
-                canAdded = True
-                for i in range(xShipL, xShipL+5):
-                    if (yShipL, i) in listTargetChose:
-                        canAdded = False
-                if canAdded:
-                    for i in range(xShipL, xShipL+5):
-                        dataTarget[yShipL][i] = 1
-                        listTargetChose.append((yShipL, i))
-                    shipL_Added += 1
-            else:
-                canAdded = True
-                for i in range(yShipL, yShipL+5):
-                    if (i, xShipL) in listTargetChose:
-                        canAdded = False
-                if canAdded:
-                    for i in range(yShipL, yShipL+5):
-                        dataTarget[i][xShipL] = 1
-                        listTargetChose.append((i, xShipL))
-                    shipL_Added += 1
-
-
-        
-        # 2 shipM
-        shipM_Added = 0
-        while shipM_Added < 2:
-            yShipM = random.randint(0, size-1)
-            if yShipM > (size-3):
-                xShipM = random.randint(0, size-3)
-                horizontal = True
-            else:
-                horizontal = random.choice([True, False])
-                if horizontal:
-                    xShipM = random.randint(0, size-3)
-                else:
-                    xShipM = random.randint(0, size-1)
-            
-            if horizontal:
-                canAdded = True
-                for i in range(xShipM, xShipM+3):
-                    if (yShipM, i) in listTargetChose:
-                        canAdded = False
-                if canAdded:
-                    for i in range(xShipM, xShipM+3):
-                        dataTarget[yShipM][i] = 1
-                        listTargetChose.append((yShipM, i))
-                    shipM_Added += 1
-            else:
-                canAdded = True
-                for i in range(yShipM, yShipM+3):
-                    if (i, xShipM) in listTargetChose:
-                        canAdded = False
-                if canAdded:
-                    for i in range(yShipM, yShipM+3):
-                        dataTarget[i][xShipM] = 1
-                        listTargetChose.append((i, xShipM))
-                    shipM_Added += 1
-
-        
-        # 5 shipS
-        shipS_Added = 0
-        while shipS_Added < 5:
-            xShipS = random.randint(0, 6)
-            yShipS = random.randint(0, 6)
-            if (yShipS, xShipS) not in listTargetChose:
-                dataTarget[yShipS][xShipS] = 1
-                listTargetChose.append((yShipS, xShipS))
-                shipS_Added += 1
+        shipDataRandom(shipL, 1, sizeGrid)
+        shipDataRandom(shipM, 2, sizeGrid)
+        shipDataRandom(shipS, 5, sizeGrid)
 
     res = []
     for line in dataTarget:
@@ -510,3 +395,40 @@ def gridDataRandom(size):
             res.append(data)
 
     return res
+
+def shipDataRandom(sizeShip, amount, sizeGrid):
+    global dataTarget, listTargetChose
+
+    ship_Added = 0
+    while ship_Added < amount:
+        yShip = random.randint(0, sizeGrid-1)
+        if yShip > (sizeGrid-sizeShip):
+            xShip = random.randint(0, sizeGrid-sizeShip)
+            horizontal = True
+        else:
+            horizontal = random.choice([True, False])
+            if horizontal:
+                xShip = random.randint(0, sizeGrid-sizeShip)
+            else:
+                xShip = random.randint(0, sizeGrid-1)
+            
+        if horizontal:
+            canAdded = True
+            for i in range(xShip, xShip+sizeShip):
+                if (yShip, i) in listTargetChose:
+                        canAdded = False
+            if canAdded:
+                for i in range(xShip, xShip+sizeShip):
+                    dataTarget[yShip][i] = 1
+                    listTargetChose.append((yShip, i))
+                ship_Added += 1
+        else:
+            canAdded = True
+            for i in range(yShip, yShip+sizeShip):
+                if (i, xShip) in listTargetChose:
+                    canAdded = False
+            if canAdded:
+                for i in range(yShip, yShip+sizeShip):
+                    dataTarget[i][xShip] = 1
+                    listTargetChose.append((i, xShip))
+                ship_Added += 1

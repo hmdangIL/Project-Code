@@ -2,15 +2,15 @@ import sys
 import os
 import pygame
 import index
-import war_one_player
-import list_ship_medium
+import war_two_player
+import data_map
 
 # clear the data in 2 file gridData
 open("gridDataPlayer1.txt", "w").close()
 open("gridDataPlayer2.txt", "w").close()
 
 
-listShip = list_ship_medium.listShip
+listShip = data_map.listShip
 # listShip = list_ship_medium.listShip
 grid = index.Grid(10, (200, 350), listShip)
 
@@ -60,17 +60,17 @@ def main():
                 if button1.click(event):
                     grid.save("gridDataPlayer1.txt")
                     grid.__init__(10, (200, 350), listShip)
-                    list_ship_medium.reset_listShip()
+                    data_map.reset_listShip()
                     print("Saved Player 1")
             if dataPlayer2 == 0 and target >= 16:
                 if button2.click(event):
                     grid.save("gridDataPlayer2.txt")
                     grid.__init__(10, (200, 350), listShip)
-                    list_ship_medium.reset_listShip()
+                    data_map.reset_listShip()
                     print("Saved Player 2")
             if dataPlayer1 != 0 and dataPlayer2 != 0:
                 if button3.click(event):
-                    war_one_player.main()
+                    war_two_player.main()
 
 if __name__ == "__main__":
     main()

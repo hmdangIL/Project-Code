@@ -12,8 +12,8 @@ FPS = 60
 
 # create the main function
 def main():
-    grid1 = index.Grid(10, (200, 300), getData=True)
-    gridAuto = index.Grid(10, (1200, 300), getData="Random")
+    grid1 = index.Grid(10, (200, 300), getData="Player1")
+    gridAuto = index.Grid(10, (1200, 300), getData="Random Medium")
 
 
     turn = "player1"
@@ -37,11 +37,10 @@ def main():
                 grid1.offAttacked()
                 gridAuto.onAttacked()
                 gridAuto.attacked(event)
+                if gridAuto.countTargetAlive() == 0:
+                    print('New page1')   
                 if gridAuto.changeTurn():
-                    if gridAuto.countTargetAlive() == 0:
-                        print('New page1')   
-                    else:
-                        turn = "auto"
+                    turn = "auto"
             if turn == "auto":
                 # draw text turn
                 gridAuto.resetTurn()
@@ -49,11 +48,10 @@ def main():
                 grid1.onAttacked()
                 grid1.randomAttacked()
                 grid1.attacked(event)
+                if grid1.countTargetAlive() == 0:
+                    print('New page2')
                 if grid1.changeTurn():
-                    if grid1.countTargetAlive() == 0:
-                        print('New page2')
-                    else:
-                        turn = "player1"
+                    turn = "player1"
 
 
 
