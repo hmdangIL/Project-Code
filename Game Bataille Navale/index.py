@@ -38,10 +38,11 @@ SIZE_GRID_MEDIUM = 10
 
 # create the button class
 class Button:
-    def __init__(self, text, pos):
+    def __init__(self, text, pos, size):
+        self.size = size
         self.text = text
         self.x, self.y = pos
-        self.font = pygame.font.SysFont("comicsans", 100)
+        self.font = pygame.font.SysFont("comicsans", self.size)
         self.change(WHITE, BLACK)
     
     def change(self, color, bg):
@@ -142,6 +143,13 @@ class Ship:
                     a = self.size_x
                     self.size_x = self.size_y
                     self.size_y = a
+
+    """def reset(self):
+        self.draging = False
+        self.size_x = size[0]
+        self.size_y = size[1]
+        self.x, self.y = pos
+        self.color = GREEN"""
 
 
 # button Square
@@ -297,8 +305,8 @@ class Grid:
             i.attacked(self.event)
         
     
-    def save(self):
-        with open('gridDataPlayer1.txt', 'w') as data:
+    def save(self, file_path):
+        with open(file_path, 'w') as data:
             for i in self.listSquare:
                 if i.isTarget():
                     data.write(str(1) + '\n')
@@ -329,6 +337,13 @@ class Grid:
             i = random.choice(self.listSquare)
         i.isKilled()
     
+    def countTarget(self):
+        self.target = 0
+        for i in self.listSquare:
+            if i.isTarget():
+                self.target += 1
+        return self.target
+    
     def countTargetAlive(self):
         self.targetAlive = 0
         for i in self.listSquare:
@@ -346,21 +361,20 @@ class Grid:
     def resetTurn(self):
         for i in self.listSquare:
             i.resetTurn()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
+    """def reset(self):
+        self.turnAttacked = False
+        self.listShip = listShip
+        self.size = size
+        self.getData = getData
+        if self.getData == True:
+            self.dataTarget = self.findGridDataPlayer1()
+        elif self.getData == False:
+            self.dataTarget = []
+            for i in range(self.size * self.size):
+                self.dataTarget.append(0)
+        elif self.getData == "Random":
+            self.dataTarget = gridDataRandom(SIZE_GRID_MEDIUM)"""
 
 
 

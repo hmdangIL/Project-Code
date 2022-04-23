@@ -1,30 +1,17 @@
 import sys
+import os
 import pygame
 import index
 import war_one_player
-
-# create the Ship
-
-# big Ship
-ship1 = index.Ship((35, 195), (1000, 300))
-# medium ship
-ship2 = index.Ship((35, 120), (1100, 300))
-ship3 = index.Ship((35, 120), (1200, 300))
-# small ship
-ship4 = index.Ship((35, 35), (1300, 300))
-ship5 = index.Ship((35, 35), (1300, 350))
-ship6 = index.Ship((35, 35), (1300, 400))
-ship7 = index.Ship((35, 35), (1300, 450))
-ship8 = index.Ship((35, 35), (1300, 500))
-
-listShip = [ship1, ship2, ship3, ship4, ship5, ship6, ship7, ship8]
+import list_ship_medium
 
 
-
+listShip = list_ship_medium.listShip
 grid1 = index.Grid(10, (200, 350), listShip)
 
-
-button1 = index.Button("WAR", (100, 100))
+# confirm grid player 1
+button1 = index.Button("Confirm grid", (50, 50), 30)
+button3 = index.Button("WAR", (100, 100), 30)
 
 # setting for the infinity loop
 clock = pygame.time.Clock()
@@ -33,11 +20,15 @@ FPS = 60
 # create the main function
 def main():
     running = True
+    # clear the data in 2 file gridData
+    open("gridDataPlayer1.txt", "w").close()
     while running:
         clock.tick(FPS)
         index.window.blit(index.bg_img, (0, 0))
-        grid1.draw()
+        grid.draw()
         button1.draw()
+        button2.draw()
+        button3.draw()
         for ship in listShip:
             ship.draw()
         pygame.display.update()
@@ -48,9 +39,12 @@ def main():
             grid1.handle_event(event)
             for ship in listShip:
                 ship.handle_event(event)
-            if button1.click(event):
-                grid1.save()
-                war_one_player.main()
+            while os.path.getsize("gridDataPlayer1.txt") == 0:
+                if button1.click(event):
+                    grid.save("gridDataPlayer1.txt")
+            while not os.path.getsize("gridDataPlayer1.txt") == 0:
+                if button3.click(event):
+                    war_one_player.main()
 
 if __name__ == "__main__":
     main()
