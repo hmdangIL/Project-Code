@@ -144,13 +144,6 @@ class Ship:
                     self.size_x = self.size_y
                     self.size_y = a
 
-    """def reset(self):
-        self.draging = False
-        self.size_x = size[0]
-        self.size_y = size[1]
-        self.x, self.y = pos
-        self.color = GREEN"""
-
 
 # button Square
 
@@ -211,8 +204,8 @@ class Square(Ship):
                 self.color = BLUE
             else:
                 self.color = WHITE
-            
-    
+
+
     def isTarget(self):
         if self.target:
             return True
@@ -361,20 +354,6 @@ class Grid:
     def resetTurn(self):
         for i in self.listSquare:
             i.resetTurn()
-    
-    """def reset(self):
-        self.turnAttacked = False
-        self.listShip = listShip
-        self.size = size
-        self.getData = getData
-        if self.getData == True:
-            self.dataTarget = self.findGridDataPlayer1()
-        elif self.getData == False:
-            self.dataTarget = []
-            for i in range(self.size * self.size):
-                self.dataTarget.append(0)
-        elif self.getData == "Random":
-            self.dataTarget = gridDataRandom(SIZE_GRID_MEDIUM)"""
 
 
 

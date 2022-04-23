@@ -56,13 +56,13 @@ def main():
             grid.handle_event(event)
             for ship in listShip:
                 ship.handle_event(event)
-            if dataPlayer1 == 0 and target == 16:
+            if dataPlayer1 == 0 and target >= 16:
                 if button1.click(event):
                     grid.save("gridDataPlayer1.txt")
                     grid.__init__(10, (200, 350), listShip)
                     list_ship_medium.reset_listShip()
                     print("Saved Player 1")
-            if dataPlayer2 == 0 and target == 16:
+            if dataPlayer2 == 0 and target >= 16:
                 if button2.click(event):
                     grid.save("gridDataPlayer2.txt")
                     grid.__init__(10, (200, 350), listShip)
